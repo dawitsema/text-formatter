@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evim — Markdown to Unicode Text Formatter</title>
+    <meta name="description" content="Evim converts markdown formatting into Unicode styled characters instantly. Bold, italic, strikethrough, monospace & more. Works on Upwork, LinkedIn, Twitter.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-image-wrapper">
+                <img src="hero.png" alt="Evim — transform your text" class="hero-image">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="hero-content">
+                <div class="logo">
+                    <span class="logo-icon">E</span>
+                    <h1>Evim</h1>
+                </div>
+                <p class="tagline">Transform <strong>Markdown</strong> into <strong>Unicode styled text</strong> — works everywhere</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="editor-grid">
+                <!-- Input Panel -->
+                <div class="panel panel-input">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-dot dot-red"></span>
+                            <h2>Input</h2>
+                        </div>
+                        <button id="btn-clear" class="btn btn-ghost" title="Clear input">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            Clear
+                        </button>
+                    </div>
+                    <div class="textarea-wrapper">
+                        <textarea id="input-text" placeholder="Paste your markdown text here...&#10;&#10;**bold text** → 𝐛𝐨𝐥𝐝 𝐭𝐞𝐱𝐭&#10;*italic text* → 𝑖𝑡𝑎𝑙𝑖𝑐 𝑡𝑒𝑥𝑡&#10;***bold italic*** → 𝒃𝒐𝒍𝒅 𝒊𝒕𝒂𝒍𝒊𝒄&#10;~~strikethrough~~ → s̶t̶r̶i̶k̶e̶&#10;`monospace` → 𝚖𝚘𝚗𝚘&#10;# Heading → 𝐇𝐞𝐚𝐝𝐢𝐧𝐠&#10;- bullet → • bullet" spellcheck="false"></textarea>
+                    </div>
+                    <div class="panel-footer">
+                        <span id="char-count" class="counter">0 characters</span>
+                        <button id="btn-format" class="btn btn-primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 11h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+                            Format Text
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="panel panel-output">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="panel-dot dot-white"></span>
+                            <h2>Output</h2>
+                        </div>
+                        <button id="btn-copy" class="btn btn-ghost" title="Copy to clipboard">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            Copy
+                        </button>
+                    </div>
+                    <div class="output-wrapper">
+                        <div id="output-text" class="output-display" data-placeholder="Formatted text will appear here..."></div>
+                    </div>
+                    <div class="panel-footer">
+                        <span id="output-char-count" class="counter">0 characters</span>
+                        <span id="copy-feedback" class="copy-feedback"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supported Formats -->
+            <section class="how-it-works">
+                <h3>Supported Formats</h3>
+                <div class="cheatsheet">
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">**text**</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">𝐁𝐨𝐥𝐝</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">*text*</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">𝐼𝑡𝑎𝑙𝑖𝑐</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">***text***</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">𝑩𝒐𝒍𝒅 𝑰𝒕𝒂𝒍𝒊𝒄</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">~~text~~</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">S̶t̶r̶i̶k̶e̶t̶h̶r̶o̶u̶g̶h̶</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">`text`</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">𝙼𝚘𝚗𝚘𝚜𝚙𝚊𝚌𝚎</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax"># Heading</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">𝐇𝐞𝐚𝐝𝐢𝐧𝐠</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">- item</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">• item</span>
+                    </div>
+                    <div class="cheat-row">
+                        <code class="cheat-syntax">> quote</code>
+                        <span class="cheat-arrow">→</span>
+                        <span class="cheat-result">⎸ quote</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p><strong>Evim</strong> · Markdown → Unicode · Ctrl+Enter to format</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
