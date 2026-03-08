@@ -176,6 +176,7 @@ body {
 .header {
     text-align: center;
     padding: 2.5rem 0 2rem;
+    position: relative;
     animation: fadeInDown 0.6s ease-out;
 }
 
@@ -183,9 +184,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
     margin-bottom: 0.5rem;
-    position: relative;
 }
 
 .logo {
@@ -246,9 +245,8 @@ body {
    =========================== */
 .btn-theme {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    right: 1.5rem;
+    top: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -267,7 +265,7 @@ body {
 .btn-theme:hover {
     background: rgba(255,255,255,0.15);
     border-color: var(--accent-2);
-    transform: translateY(-50%) scale(1.08);
+    transform: scale(1.08);
 }
 
 /* Sun/Moon icon visibility */
@@ -696,17 +694,8 @@ textarea::placeholder {
         min-height: 200px;
     }
 
-    .btn-theme {
-        position: static;
-        transform: none;
-    }
-
-    .btn-theme:hover {
-        transform: scale(1.08);
-    }
-
     .header-top-bar {
-        justify-content: space-between;
+        margin-bottom: 1rem;
     }
 }
 
