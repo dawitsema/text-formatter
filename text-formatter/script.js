@@ -360,6 +360,29 @@ function fallbackCopy(text) {
 }
 
 // ===========================
+// Theme Toggle (Dark / Light)
+// ===========================
+
+const btnTheme = document.getElementById('btn-theme');
+const htmlEl = document.documentElement;
+
+// Load saved theme or default to dark
+(function initTheme() {
+    const saved = localStorage.getItem('evim-theme');
+    if (saved) {
+        htmlEl.setAttribute('data-theme', saved);
+    }
+})();
+
+// Toggle on click
+btnTheme.addEventListener('click', () => {
+    const current = htmlEl.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    htmlEl.setAttribute('data-theme', next);
+    localStorage.setItem('evim-theme', next);
+});
+
+// ===========================
 // Init
 // ===========================
 updateCharCount();
