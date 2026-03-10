@@ -126,6 +126,97 @@ function processInline(text) {
 // Full Text Formatter
 // ===========================
 
+let currentUnicodeOutput = '';
+
+function formatHTML(input) {
+    if (!input.trim()) return '';
+
+    const lines = input.split('\n');
+    const result = [];
+    let prevEmpty = false;
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+    }
+
+    function processInlineH(text) {
+        text = escapeHTML(text);
+        text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        text = text.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+        text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/__(.+?)__/g, '<strong>$1</strong>');
+        text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        text = text.replace(/(?<!\w)_(.+?)_(?!\w)/g, '<em>$1</em>');
+        text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
+        text = text.replace(/`(.+?)`/g, '<code>$1</code>');
+        return text;
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+            if (!prevEmpty && result.length > 0) result.push('');
+            prevEmpty = true;
+            continue;
+        }
+        prevEmpty = false;
+
+        if (/^[-*_]{3,}$/.test(trimmed)) {
+            result.push('───────────────────');
+            continue;
+        }
+
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+        if (headingMatch) {
+            result.push(`<strong>${processInlineH(headingMatch[2].replace(/\*+|_+|~~|`/g, ''))}</strong>`);
+            continue;
+        }
+
+        const quoteMatch = trimmed.match(/^>\s*(.*)$/);
+        if (quoteMatch) {
+            result.push(`⎸ ${processInlineH(quoteMatch[1])}`);
+            continue;
+        }
+
+        const bulletMatch = trimmed.match(/^[-*+]\s+(.+)$/);
+        if (bulletMatch) {
+            result.push(`• ${processInlineH(bulletMatch[1])}`);
+            continue;
+        }
+
+        const numberedMatch = trimmed.match(/^(\d+)[.)]\s+(.+)$/);
+        if (numberedMatch) {
+            result.push(`<strong>${numberedMatch[1]}</strong>. ${processInlineH(numberedMatch[2])}`);
+            continue;
+        }
+
+        const fullBoldMatch = trimmed.match(/^\*\*(.+)\*\*$/);
+        if (fullBoldMatch && !trimmed.includes('**', 2 + fullBoldMatch[1].length)) {
+            const inner = fullBoldMatch[1];
+            if (!inner.includes('**')) {
+                result.push(`<strong>${escapeHTML(inner)}</strong>`);
+                continue;
+            }
+        }
+
+        const labelMatch = trimmed.match(/^\*\*(.+?)\*\*(.+)$/);
+        if (labelMatch) {
+            result.push(`- <strong>${escapeHTML(labelMatch[1])}</strong>${processInlineH(labelMatch[2])}`);
+            continue;
+        }
+
+        result.push(processInlineH(trimmed));
+    }
+
+    while (result.length > 0 && result[result.length - 1] === '') {
+        result.pop();
+    }
+
+    return result.join('\n');
+}
+
 /**
  * Format the entire input text:
  *
@@ -257,8 +348,8 @@ const copyFeedback = document.getElementById('copy-feedback');
 // Format button click
 btnFormat.addEventListener('click', () => {
     const input = inputEl.value;
-    const formatted = formatText(input);
-    outputEl.textContent = formatted;
+    currentUnicodeOutput = formatText(input);
+    outputEl.innerHTML = formatHTML(input);
     updateOutputCount();
 
     // Pulse animation
@@ -275,11 +366,12 @@ inputEl.addEventListener('input', () => {
     debounceTimer = setTimeout(() => {
         const input = inputEl.value;
         if (input.trim()) {
-            const formatted = formatText(input);
-            outputEl.textContent = formatted;
+            currentUnicodeOutput = formatText(input);
+            outputEl.innerHTML = formatHTML(input);
             updateOutputCount();
         } else {
-            outputEl.textContent = '';
+            currentUnicodeOutput = '';
+            outputEl.innerHTML = '';
             updateOutputCount();
         }
     }, 300);
@@ -287,13 +379,24 @@ inputEl.addEventListener('input', () => {
 
 // Copy button
 btnCopy.addEventListener('click', async () => {
-    const text = outputEl.textContent;
+    const text = currentUnicodeOutput;
     if (!text) return;
+    
+    // Create an HTML version that forces the font for rich-text editors (like Upwork)
+    const currentFont = fontSelector.value || 'inherit';
+    // Convert newlines to <br> for HTML pasting
+    const htmlContent = `<span style="font-family: ${currentFont};">${text.replace(/\n/g, '<br>')}</span>`;
 
     try {
-        await navigator.clipboard.writeText(text);
+        // Modern Clipboard API to copy both Plain Text and HTML
+        const clipboardItem = new ClipboardItem({
+            'text/plain': new Blob([text], { type: 'text/plain' }),
+            'text/html': new Blob([htmlContent], { type: 'text/html' })
+        });
+        await navigator.clipboard.write([clipboardItem]);
         showCopyFeedback();
     } catch (err) {
+        console.warn('Clipboard API failed, falling back to basic text copy...', err);
         fallbackCopy(text);
         showCopyFeedback();
     }
@@ -302,7 +405,8 @@ btnCopy.addEventListener('click', async () => {
 // Clear button
 btnClear.addEventListener('click', () => {
     inputEl.value = '';
-    outputEl.textContent = '';
+    currentUnicodeOutput = '';
+    outputEl.innerHTML = '';
     updateCharCount();
     updateOutputCount();
     inputEl.focus();
@@ -326,7 +430,7 @@ function updateCharCount() {
 }
 
 function updateOutputCount() {
-    const len = outputEl.textContent.length;
+    const len = currentUnicodeOutput ? currentUnicodeOutput.length : 0;
     outputCharCount.textContent = `${len} character${len !== 1 ? 's' : ''}`;
 }
 
@@ -349,14 +453,27 @@ function showCopyFeedback() {
 }
 
 function fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.left = '-9999px';
-    document.body.appendChild(textarea);
-    textarea.select();
+    const tempDiv = document.createElement('div');
+    const currentFont = fontSelector.value || 'inherit';
+    tempDiv.innerHTML = `<span style="font-family: ${currentFont};">${text.replace(/\n/g, '<br>')}</span>`;
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.left = '-9999px';
+    // Requires contenteditable and focus for some browsers to copy HTML correctly natively
+    tempDiv.contentEditable = true;
+    document.body.appendChild(tempDiv);
+    
+    // Select the content
+    const range = document.createRange();
+    range.selectNodeContents(tempDiv);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    
     document.execCommand('copy');
-    document.body.removeChild(textarea);
+    
+    // Cleanup
+    document.body.removeChild(tempDiv);
+    sel.removeAllRanges();
 }
 
 // ===========================
@@ -380,6 +497,39 @@ btnTheme.addEventListener('click', () => {
     const next = current === 'dark' ? 'light' : 'dark';
     htmlEl.setAttribute('data-theme', next);
     localStorage.setItem('evim-theme', next);
+});
+
+// ===========================
+// Font Selector Init
+// ===========================
+const fontSelector = document.getElementById('font-selector');
+const htmlElFont = document.documentElement;
+
+function updateEditorFont(fontValue) {
+    if (!fontValue) return;
+    // Set global CSS variable
+    htmlElFont.style.setProperty('--editor-font', fontValue);
+    localStorage.setItem('evim-font', fontValue);
+    
+    // Also explicitly apply directly to elements to ensure overriding doesn't fail
+    document.querySelectorAll('textarea, .output-display').forEach(el => {
+        el.style.fontFamily = fontValue;
+    });
+}
+
+(function initFont() {
+    const saved = localStorage.getItem('evim-font');
+    if (saved) {
+        fontSelector.value = saved;
+        updateEditorFont(saved);
+    }
+})();
+
+fontSelector.addEventListener('change', (e) => {
+    updateEditorFont(e.target.value);
+});
+fontSelector.addEventListener('input', (e) => {
+    updateEditorFont(e.target.value);
 });
 
 // ===========================

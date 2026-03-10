@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&family=Fira+Code&family=IBM+Plex+Mono&family=Inconsolata&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono&family=Lexend:wght@300;400;500;600;700;800;900&family=Martian+Mono&family=Montserrat:wght@300;400;500;600;700;800;900&family=Roboto+Mono&family=Source+Code+Pro&family=Ubuntu+Mono&family=Victor+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,10 +23,50 @@
                     <span class="logo-icon">E</span>
                     <h1>Evim</h1>
                 </div>
-                <button id="btn-theme" class="btn btn-theme" title="Toggle light/dark mode" aria-label="Toggle theme">
-                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
+                <div class="header-controls">
+                    <select id="font-selector" class="font-selector" aria-label="Select Editor Font">
+                        <option value="var(--font)">Inter (Default)</option>
+                        <optgroup label="Top Industry Standards">
+                            <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                            <option value="'Fira Code', monospace">Fira Code</option>
+                            <option value="'Cascadia Code', monospace">Cascadia Code</option>
+                            <option value="'Source Code Pro', monospace">Source Code Pro</option>
+                            <option value="'Hack', monospace">Hack</option>
+                        </optgroup>
+                        <optgroup label="The 'New Wave' (2024–2026 Trends)">
+                            <option value="'Geist Mono', monospace">Geist Mono</option>
+                            <option value="'Monaspace Neon', 'Monaspace Argon', monospace">Monaspace</option>
+                            <option value="'Commit Mono', monospace">Commit Mono</option>
+                            <option value="'Maple Mono', monospace">Maple Mono</option>
+                            <option value="'Intel One Mono', monospace">Intel One Mono</option>
+                            <option value="'Martian Mono', monospace">Martian Mono</option>
+                        </optgroup>
+                        <optgroup label="Specialized & Power-User Favorites">
+                            <option value="'Iosevka', monospace">Iosevka</option>
+                            <option value="'MonoLisa', monospace">MonoLisa</option>
+                            <option value="'Berkeley Mono', monospace">Berkeley Mono</option>
+                            <option value="'Victor Mono', monospace">Victor Mono</option>
+                            <option value="'Inconsolata', monospace">Inconsolata</option>
+                        </optgroup>
+                        <optgroup label="Distinctive Alternatives">
+                            <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
+                            <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
+                            <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                            <option value="'Anonymous Pro', monospace">Anonymous Pro</option>
+                        </optgroup>
+                        <optgroup label="Common Fonts">
+                            <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                            <option value="'Lexend', sans-serif">Lexend</option>
+                            <option value="'Radix Pro', sans-serif">Radix Pro</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="Arial, Helvetica, sans-serif">Arial</option>
+                        </optgroup>
+                    </select>
+                    <button id="btn-theme" class="btn btn-theme" title="Toggle light/dark mode" aria-label="Toggle theme">
+                        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                </div>
             </div>
             <p class="tagline">Transform <strong>Markdown</strong> into <strong>Unicode styled text</strong> — works everywhere</p>
         </header>

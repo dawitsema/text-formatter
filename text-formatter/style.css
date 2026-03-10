@@ -77,6 +77,7 @@
     --shadow-glow: 0 0 40px rgba(234, 88, 12, 0.08);
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --editor-font: var(--font);
 }
 
 *, *::before, *::after {
@@ -241,12 +242,54 @@ body {
 }
 
 /* ===========================
-   Theme Toggle Button
+   Theme Toggle & Font Selector
    =========================== */
-.btn-theme {
+.header-controls {
     position: absolute;
     right: 1.5rem;
     top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 10;
+}
+
+.font-selector {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.55rem 2.2rem 0.55rem 1rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font);
+    font-size: 0.85rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all var(--transition);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ea580c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 14px;
+    box-shadow: var(--shadow-sm);
+    max-width: 180px;
+    text-overflow: ellipsis;
+}
+
+.font-selector:hover, .font-selector:focus {
+    border-color: var(--accent-2);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.font-selector optgroup, .font-selector option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: var(--font);
+}
+
+.btn-theme {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -386,7 +429,7 @@ textarea {
     outline: none;
     resize: none;
     color: var(--text-primary);
-    font-family: var(--font);
+    font-family: var(--editor-font);
     font-size: 0.95rem;
     line-height: 1.7;
     transition: color var(--transition);
@@ -408,6 +451,7 @@ textarea::placeholder {
     height: 100%;
     min-height: 280px;
     padding: 1.25rem;
+    font-family: var(--editor-font);
     font-size: 0.95rem;
     line-height: 1.7;
     white-space: pre-wrap;
@@ -695,7 +739,18 @@ textarea::placeholder {
     }
 
     .header-top-bar {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .header-controls {
+        position: static;
+        justify-content: center;
+    }
+
+    .font-selector {
+        max-width: 250px;
     }
 }
 
